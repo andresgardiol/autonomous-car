@@ -1,6 +1,9 @@
+const INITIAL_THRESHOLD = 16;
+
 class GraphEditor {
-    constructor(canvas, graph) {
-        this.canvas = canvas;
+    constructor(viewport, graph) {
+        this.viewport = viewport;
+        this.canvas = viewport.canvas;
         this.graph = graph;
 
         this.ctx = this.canvas.getContext("2d");
@@ -9,6 +12,7 @@ class GraphEditor {
         this.hovered = null;
         this.dragging = false;
         this.mouse = null;
+        this.threshold = INITIAL_THRESHOLD;
 
         this.shift = false;
 
@@ -58,8 +62,10 @@ class GraphEditor {
 
     #handleMouseMove(event) {
         this.shift = event.shiftKey;
-        this.mouse = new Point(event.offsetX, event.offsetY);
-        this.hovered = getNearestPoint(this.mouse, this.graph.points, 16);
+        this.mouse = this.viewport.getMouse(event, true);
+
+        this.threshold = INITIAL_THRESHOLD * this.viewport.zoom;
+        this.hovered = getNearestPoint(this.mouse, this.graph.points, this.threshold);
         if (this.dragging) {
             this.selected.x = this.mouse.x;
             this.selected.y = this.mouse.y;
@@ -81,6 +87,11 @@ class GraphEditor {
         }
     }
 
+    dispose() {
+        this.graph.dispose();
+        this.selected = null;
+        this.hovered = null;
+    }
     display() {
         this.graph.draw(this.ctx);
         if (this.hovered) {

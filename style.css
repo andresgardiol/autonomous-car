@@ -5,9 +5,27 @@ body {
 
 h1 {
     color: white;
-    font-family: Arial;
+    font-family: Arial, serif;
 }
 
 #myCanvas {
     background-color: #2a5;
+}
+
+.primary-btn {
+    background-color: #1a6407;
+    color: #fff;
+    border: 1px solid #1a6407;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.warning-btn {
+    background-color: #f00;
+    color: #fff;
+    border: 1px solid #f00;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
 }

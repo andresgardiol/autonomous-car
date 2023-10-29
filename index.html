@@ -10,39 +10,58 @@
 <canvas id="myCanvas"></canvas>
 
 <div id="controls">
+    <button class="primary-btn" onclick="save()">Save 💾</button>
+    <button class="warning-btn" onclick="dispose()">Clear All 🗑️</button>
 </div>
 
+<script src="js/world.js"></script>
 <script src="js/graphEditor.js"></script>
+<script src="js/viewport.js"></script>
 <script src="js/math/graph.js"></script>
 <script src="js/math/utils.js"></script>
 <script src="js/primitives/segment.js"></script>
 <script src="js/primitives/point.js"></script>
+<script src="js/primitives/polygon.js"></script>
+<script src="js/primitives/envelope.js"></script>
 <script>
     myCanvas.width = 600;
     myCanvas.height = 600;
 
     const ctx = myCanvas.getContext("2d");
 
-    const p1 = new Point(200, 200);
-    const p2 = new Point(500, 200);
-    const p3 = new Point(400, 400);
-    const p4 = new Point(100, 300);
-
-    const s1 = new Segment(p1, p2);
-    const s2 = new Segment(p1, p3);
-    const s3 = new Segment(p1, p4);
-    const s4 = new Segment(p2, p3);
+    const graphString = localStorage.getItem('graph');
+    const graphInfo = graphString ? JSON.parse(graphString) : null;
 
 
-    const graph = new Graph([p1, p2, p3, p4], [s1, s2, s3, s4]);
-    const graphEditor = new GraphEditor(myCanvas, graph);
+    const graph = graphInfo
+        ? Graph.load(graphInfo)
+        : new Graph();
+
+    const world = new World(graph, 100);
+    const viewport = new Viewport(myCanvas);
+    const graphEditor = new GraphEditor(viewport, graph);
 
     animate();
 
     function animate() {
-        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        viewport.reset();
+        world.generate();
+        world.draw(ctx);
+        ctx.globalAlpha = 0.3
         graphEditor.display();
         requestAnimationFrame(animate);
+    }
+
+    function dispose() {
+        // ask for confirmation
+        if (!confirm('Are you sure you want to dispose the graph?')) {
+            return;
+        }
+        graphEditor.dispose();
+    }
+
+    function save() {
+        localStorage.setItem('graph', JSON.stringify(graph));
     }
 </script>
 </body>
