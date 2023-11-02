@@ -92,6 +92,7 @@ class GraphEditor {
         this.selected = null;
         this.hovered = null;
     }
+
     display() {
         this.graph.draw(this.ctx);
         if (this.hovered) {
@@ -100,7 +101,11 @@ class GraphEditor {
         if (this.selected) {
             if (this.shift) {
                 const intent = this.hovered ? this.hovered : this.mouse;
-                new Segment(this.selected, intent).draw(this.ctx, {color: "yellow", dash: [3, 3]});
+                new Segment(this.selected, intent).draw(this.ctx, {
+                    width: 3 * this.viewport.zoom,
+                    color: "yellow",
+                    dash: [3 * this.viewport.zoom, 3 * this.viewport.zoom]
+                });
             }
             this.selected.draw(this.ctx, {outline: true});
         }

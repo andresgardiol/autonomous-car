@@ -14,6 +14,10 @@ class Graph {
         return new Graph(points, segments);
     }
 
+    hash() {
+        return JSON.stringify(this);
+    }
+
     dispose() {
         this.points.length = 0;
         this.segments.length = 0;
